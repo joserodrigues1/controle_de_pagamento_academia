@@ -265,13 +265,9 @@ button:disabled {
   min-width: 0;
 }
 
-.list li span {
-  flex: 1 1 360px;
-}
-
 .list-primary {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   gap: 10px;
   flex: 1 1 380px;
   min-width: 0;
@@ -480,6 +476,134 @@ button:disabled {
   font-size: 0.95rem;
 }
 
+.user-grid {
+  align-items: start;
+}
+
+.payment-card {
+  overflow: hidden;
+}
+
+.payment-layout {
+  display: grid;
+  gap: 18px;
+}
+
+.payment-layout--interactive {
+  grid-template-columns: minmax(0, 1fr);
+  align-items: start;
+}
+
+.payment-overview {
+  display: grid;
+  gap: 14px;
+}
+
+.payment-section-title {
+  display: grid;
+  gap: 8px;
+}
+
+.payment-section-title h2,
+.feedback-card h2 {
+  margin: 0;
+}
+
+.payment-method-toolbar {
+  display: grid;
+  gap: 6px;
+  justify-items: end;
+  flex: 0 0 auto;
+}
+
+.payment-method-label {
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgba(26, 47, 134, 0.62);
+}
+
+.payment-hero {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 16px 18px;
+  border-radius: 18px;
+  border: 1px solid rgba(26, 47, 134, 0.14);
+  background: linear-gradient(135deg, rgba(246, 248, 255, 0.96), rgba(255, 248, 232, 0.9));
+}
+
+.payment-hero-emoji {
+  flex: 0 0 auto;
+  width: 48px;
+  height: 48px;
+  display: inline-grid;
+  place-items: center;
+  border-radius: 14px;
+  background: rgba(26, 47, 134, 0.12);
+  font-size: 1.55rem;
+}
+
+.payment-hero strong {
+  display: block;
+  margin-bottom: 4px;
+  font-size: 1.02rem;
+  color: var(--azul-escuro);
+}
+
+.payment-hero p {
+  margin: 0;
+  color: var(--texto-secundario);
+}
+
+.payment-info-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 10px;
+}
+
+.payment-info-card {
+  display: grid;
+  gap: 5px;
+  padding: 14px;
+  min-width: 0;
+  border-radius: 16px;
+  background: rgba(252, 253, 255, 0.95);
+  border: 1px solid rgba(26, 47, 134, 0.12);
+}
+
+.payment-info-card span {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: rgba(26, 47, 134, 0.62);
+}
+
+.payment-info-card strong {
+  font-size: 0.98rem;
+  color: var(--azul-escuro);
+  line-height: 1.4;
+}
+
+.payment-form-panel {
+  display: grid;
+  gap: 12px;
+  align-self: start;
+  width: 100%;
+  max-width: 100%;
+  justify-self: stretch;
+  padding: 14px;
+  border-radius: 18px;
+  border: 1px solid rgba(26, 47, 134, 0.14);
+  background: rgba(249, 250, 255, 0.94);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.65);
+}
+
+.payment-form-panel-header {
+  display: grid;
+  gap: 8px;
+}
+
 .payment-form {
   gap: 12px;
 }
@@ -489,11 +613,15 @@ button:disabled {
   align-items: center;
   gap: 12px;
   flex-wrap: wrap;
-  margin: 12px 0;
+  margin: 0;
   padding: 12px 14px;
   border-radius: 16px;
   border: 1px solid rgba(26, 47, 134, 0.14);
   background: rgba(248, 250, 255, 0.86);
+}
+
+.compact-hint {
+  margin: 0;
 }
 
 .pix-box button {
@@ -517,7 +645,7 @@ button:disabled {
   display: inline-flex;
   gap: 6px;
   flex-wrap: wrap;
-  margin: 8px 0 12px;
+  margin: 0;
   align-items: center;
   padding: 4px;
   border-radius: 16px;
@@ -550,6 +678,132 @@ button:disabled {
 
 .pay-method-row button.active:hover {
   background: linear-gradient(90deg, var(--azul), var(--azul-escuro));
+}
+
+.feedback-card {
+  display: grid;
+  gap: 14px;
+}
+
+.feedback-heading {
+  margin-bottom: 0;
+}
+
+.feedback-form textarea {
+  min-height: 128px;
+  resize: vertical;
+}
+
+.feedback-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.feedback-list li {
+  align-items: flex-start;
+}
+
+.feedback-primary {
+  align-items: flex-start;
+}
+
+.feedback-bubble {
+  width: 42px;
+  height: 42px;
+  flex: 0 0 auto;
+  display: inline-grid;
+  place-items: center;
+  border-radius: 14px;
+  background: rgba(26, 47, 134, 0.09);
+  font-size: 1.25rem;
+}
+
+.feedback-content {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+}
+
+.feedback-content strong {
+  color: var(--azul-escuro);
+}
+
+.feedback-meta {
+  font-size: 0.82rem;
+  color: rgba(61, 69, 112, 0.8);
+}
+
+.feedback-message {
+  margin: 2px 0 0;
+  color: var(--texto-secundario);
+  line-height: 1.55;
+  white-space: pre-wrap;
+}
+
+.user-footer-section {
+  margin-top: 16px;
+}
+
+.payment-celebration {
+  position: fixed;
+  top: 18px;
+  right: 18px;
+  width: min(360px, calc(100vw - 28px));
+  padding: 16px 18px;
+  border-radius: 18px;
+  border: 1px solid rgba(26, 47, 134, 0.18);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.98), rgba(244, 248, 255, 0.96));
+  box-shadow: 0 22px 50px rgba(19, 30, 74, 0.18);
+  z-index: 1200;
+  pointer-events: none;
+}
+
+.payment-celebration strong {
+  display: block;
+  margin-bottom: 6px;
+  color: var(--azul-escuro);
+  font-size: 1rem;
+}
+
+.payment-celebration p {
+  margin: 0;
+  color: var(--texto-secundario);
+  font-size: 0.92rem;
+}
+
+.payment-celebration-burst {
+  position: relative;
+  height: 42px;
+  margin-bottom: 8px;
+}
+
+.payment-celebration-emoji {
+  position: absolute;
+  top: 0;
+  font-size: 1.45rem;
+}
+
+.payment-celebration-emoji:nth-child(1) {
+  left: 8%;
+}
+
+.payment-celebration-emoji:nth-child(2) {
+  left: 28%;
+}
+
+.payment-celebration-emoji:nth-child(3) {
+  left: 48%;
+}
+
+.payment-celebration-emoji:nth-child(4) {
+  left: 68%;
+}
+
+.payment-celebration-emoji:nth-child(5) {
+  left: 84%;
 }
 
 .badge-method {
@@ -639,6 +893,24 @@ button:disabled {
   .proof-actions .hover-menu {
     margin-left: auto;
   }
+
+  .payment-layout--interactive,
+  .payment-info-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .payment-method-toolbar {
+    width: 100%;
+    justify-items: start;
+  }
+
+  .payment-form-panel {
+    width: 100%;
+  }
+
+  .feedback-actions {
+    align-items: flex-start;
+  }
 }
 
 @media (max-width: 640px) {
@@ -660,6 +932,16 @@ button:disabled {
     align-items: flex-start;
   }
 
+  .payment-hero {
+    padding: 14px;
+  }
+
+  .payment-hero-emoji {
+    width: 42px;
+    height: 42px;
+    font-size: 1.35rem;
+  }
+
   .hover-menu-panel {
     max-width: min(280px, calc(100vw - 24px));
   }
@@ -672,6 +954,13 @@ button:disabled {
     left: 12px;
     right: 12px;
     bottom: 12px;
+  }
+
+  .payment-celebration {
+    left: 12px;
+    right: 12px;
+    top: 12px;
+    width: auto;
   }
 }
 

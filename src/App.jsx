@@ -689,33 +689,68 @@ function App() {
           <section className="grid user-grid">
             <article className="card glass payment-card">
               <div className={`payment-layout ${canStartPayment ? "payment-layout--interactive" : ""}`}>
+                {canStartPayment && (
+                  <div className="payment-form-panel">
+                    <div className="payment-form-panel-header">
+                      <span className="payment-method-label">Forma de pagamento</span>
+                      <div className="pay-method-row">
+                        <button
+                          type="button"
+                          className={payForm.paymentMethod === "pix" ? "active" : ""}
+                          onClick={() => setPayForm((p) => ({ ...p, paymentMethod: "pix" }))}
+                        >
+                          PIX
+                        </button>
+                        <button
+                          type="button"
+                          className={payForm.paymentMethod === "cash" ? "active" : ""}
+                          onClick={() => setPayForm((p) => ({ ...p, paymentMethod: "cash", proof: null }))}
+                        >
+                          Dinheiro
+                        </button>
+                      </div>
+                    </div>
+
+                    {payForm.paymentMethod === "pix" ? (
+                      <div className="pix-box">
+                        <p className="chave-pix">
+                          <strong>Chave PIX:</strong> 621.669.183-01
+                        </p>
+                        <button type="button" onClick={() => handleCopy("621.669.183-01")}>
+                          Copiar chave PIX 📋
+                        </button>
+                      </div>
+                    ) : (
+                      <p className="hint compact-hint">
+                        Pagamento em dinheiro não exige comprovante digital. Confirme abaixo para registrar o pedido de
+                        análise.
+                      </p>
+                    )}
+
+                    <form className="payment-form" onSubmit={createPayment}>
+                      {payForm.paymentMethod === "pix" && (
+                        <input
+                          type="file"
+                          accept="image/*,.pdf"
+                          required
+                          onChange={(e) => setPayForm((p) => ({ ...p, proof: e.target.files?.[0] || null }))}
+                        />
+                      )}
+                      <button className="btn-block" type="submit" disabled={loading}>
+                        {payForm.paymentMethod === "cash"
+                          ? "Confirmar pagamento em dinheiro 💸"
+                          : "Enviar comprovante PIX ✨"}
+                      </button>
+                    </form>
+                  </div>
+                )}
+
                 <div className="payment-overview">
                   <div className="payment-section-title">
                     <div>
                       <h2>Pagamento da mensalidade</h2>
                       <p className="hint">Acompanhe sua situação atual, a próxima liberação e o prazo do seu acesso.</p>
                     </div>
-                    {canStartPayment && (
-                      <div className="payment-method-toolbar">
-                        <span className="payment-method-label">Forma</span>
-                        <div className="pay-method-row">
-                          <button
-                            type="button"
-                            className={payForm.paymentMethod === "pix" ? "active" : ""}
-                            onClick={() => setPayForm((p) => ({ ...p, paymentMethod: "pix" }))}
-                          >
-                            PIX
-                          </button>
-                          <button
-                            type="button"
-                            className={payForm.paymentMethod === "cash" ? "active" : ""}
-                            onClick={() => setPayForm((p) => ({ ...p, paymentMethod: "cash", proof: null }))}
-                          >
-                            Dinheiro
-                          </button>
-                        </div>
-                      </div>
-                    )}
                   </div>
 
                   {!paymentSectionReady && <p className="hint">Carregando situação do pagamento...</p>}
@@ -758,42 +793,6 @@ function App() {
                     </>
                   )}
                 </div>
-
-                {canStartPayment && (
-                  <div className="payment-form-panel">
-                    {payForm.paymentMethod === "pix" ? (
-                      <div className="pix-box">
-                        <p className="chave-pix">
-                          <strong>Chave PIX:</strong> 621.669.183-01
-                        </p>
-                        <button type="button" onClick={() => handleCopy("621.669.183-01")}>
-                          Copiar chave PIX 📋
-                        </button>
-                      </div>
-                    ) : (
-                      <p className="hint compact-hint">
-                        Pagamento em dinheiro não exige comprovante digital. Confirme abaixo para registrar o pedido de
-                        análise.
-                      </p>
-                    )}
-
-                    <form className="payment-form" onSubmit={createPayment}>
-                      {payForm.paymentMethod === "pix" && (
-                        <input
-                          type="file"
-                          accept="image/*,.pdf"
-                          required
-                          onChange={(e) => setPayForm((p) => ({ ...p, proof: e.target.files?.[0] || null }))}
-                        />
-                      )}
-                      <button className="btn-block" type="submit" disabled={loading}>
-                        {payForm.paymentMethod === "cash"
-                          ? "Confirmar pagamento em dinheiro 💸"
-                          : "Enviar comprovante PIX ✨"}
-                      </button>
-                    </form>
-                  </div>
-                )}
               </div>
             </article>
 

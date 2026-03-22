@@ -15,6 +15,8 @@ const rootDir = path.join(__dirname, "..");
 /** Pasta `dist` do Vite (projeto pai do /server) — site + API no mesmo processo em produção */
 const clientDistDir = path.join(rootDir, "..", "dist");
 const uploadsDir = path.join(rootDir, "uploads");
+const proofRetentionMonths = Math.max(1, Number(process.env.PROOF_RETENTION_MONTHS) || 3);
+const proofCleanupIntervalMs = Math.max(60_000, Number(process.env.PROOF_CLEANUP_INTERVAL_MS) || 24 * 60 * 60 * 1000);
 
 if (!fs.existsSync(uploadsDir)) fs.mkdirSync(uploadsDir, { recursive: true });
 
@@ -33,6 +35,48 @@ const upload = multer({ storage });
 app.use(cors());
 app.use(express.json());
 app.use("/uploads", express.static(uploadsDir));
+
+function resolveUploadAbsolutePath(fileUrl) {
+  if (!fileUrl) return null;
+  const relativeFile = String(fileUrl).replace(/^\/+/, "").replace(/^uploads\//, "");
+  if (!relativeFile) return null;
+  const absolutePath = path.resolve(uploadsDir, relativeFile);
+  const uploadsRoot = path.resolve(uploadsDir);
+  if (!absolutePath.startsWith(uploadsRoot)) return null;
+  return absolutePath;
+}
+
+async function deleteUploadByUrl(fileUrl) {
+  const absolutePath = resolveUploadAbsolutePath(fileUrl);
+  if (!absolutePath) return false;
+  try {
+    await fs.promises.unlink(absolutePath);
+    return true;
+  } catch (error) {
+    if (error?.code === "ENOENT") return false;
+    throw error;
+  }
+}
+
+async function cleanupExpiredProofs(now = dayjs()) {
+  const cutoff = now.subtract(proofRetentionMonths, "month").toISOString();
+  const expiredPayments = await all(
+    "SELECT id, proof_file, admin_proof_file FROM payments WHERE datetime(created_at) <= datetime(?) AND (proof_file IS NOT NULL OR admin_proof_file IS NOT NULL)",
+    [cutoff]
+  );
+
+  let removedFiles = 0;
+  for (const payment of expiredPayments) {
+    if (await deleteUploadByUrl(payment.proof_file)) removedFiles += 1;
+    if (await deleteUploadByUrl(payment.admin_proof_file)) removedFiles += 1;
+    await run("UPDATE payments SET proof_file = NULL, admin_proof_file = NULL WHERE id = ?", [payment.id]);
+  }
+
+  return {
+    affectedPayments: expiredPayments.length,
+    removedFiles,
+  };
+}
 
 function monthRefNow() {
   return dayjs().format("YYYY-MM");
@@ -518,6 +562,26 @@ async function bootstrap() {
   await initDb();
   await ensureAdmin();
   await run("UPDATE payments SET status = 'pending' WHERE status = 'draft'");
+  const startupCleanup = await cleanupExpiredProofs();
+  if (startupCleanup.affectedPayments || startupCleanup.removedFiles) {
+    console.log(
+      `Limpeza automática concluída: ${startupCleanup.affectedPayments} pagamento(s) revisado(s), ${startupCleanup.removedFiles} arquivo(s) removido(s).`
+    );
+  }
+
+  const cleanupTimer = setInterval(async () => {
+    try {
+      const cleanupResult = await cleanupExpiredProofs();
+      if (cleanupResult.affectedPayments || cleanupResult.removedFiles) {
+        console.log(
+          `Limpeza automática concluída: ${cleanupResult.affectedPayments} pagamento(s) revisado(s), ${cleanupResult.removedFiles} arquivo(s) removido(s).`
+        );
+      }
+    } catch (error) {
+      console.error("Erro ao limpar comprovantes antigos:", error);
+    }
+  }, proofCleanupIntervalMs);
+  cleanupTimer.unref?.();
 
   if (fs.existsSync(clientDistDir)) {
     app.use(express.static(clientDistDir));
