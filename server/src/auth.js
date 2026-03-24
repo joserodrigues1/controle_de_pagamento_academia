@@ -1,6 +1,8 @@
 import jwt from "jsonwebtoken";
+import process from "node:process";
 
 const JWT_SECRET = process.env.JWT_SECRET || "dev-secret-change-me";
+export const USING_DEFAULT_JWT_SECRET = JWT_SECRET === "dev-secret-change-me";
 
 export const signToken = (payload) =>
   jwt.sign(payload, JWT_SECRET, { expiresIn: "12h" });

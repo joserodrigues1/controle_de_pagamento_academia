@@ -82,8 +82,36 @@ export async function initDb() {
     )
   `);
 
+  await run(`
+    CREATE TABLE IF NOT EXISTS expenses (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      title TEXT NOT NULL,
+      description TEXT,
+      amount REAL NOT NULL,
+      expense_date TEXT NOT NULL,
+      month_ref TEXT NOT NULL,
+      created_by_user_id INTEGER NOT NULL,
+      created_at TEXT NOT NULL,
+      FOREIGN KEY (created_by_user_id) REFERENCES users(id)
+    )
+  `);
+
+  await run(`
+    CREATE TABLE IF NOT EXISTS expense_attachments (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      expense_id INTEGER NOT NULL,
+      file_url TEXT NOT NULL,
+      original_name TEXT NOT NULL,
+      created_at TEXT NOT NULL,
+      FOREIGN KEY (expense_id) REFERENCES expenses(id)
+    )
+  `);
+
   await ensureColumn("payments", "admin_proof_file", "TEXT");
   await ensureColumn("payments", "confirmed_at", "TEXT");
   await ensureColumn("users", "phone", "TEXT");
   await ensureColumn("payments", "payment_method", "TEXT DEFAULT 'pix'");
+  await run("CREATE INDEX IF NOT EXISTS idx_expenses_month_ref ON expenses(month_ref)");
+  await run("CREATE INDEX IF NOT EXISTS idx_expenses_expense_date ON expenses(expense_date)");
+  await run("CREATE INDEX IF NOT EXISTS idx_expense_attachments_expense_id ON expense_attachments(expense_id)");
 }
