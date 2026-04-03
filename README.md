@@ -3,7 +3,7 @@
 Sistema completo com tema esportivo para:
 - Cadastro/login de alunos.
 - Envio de pagamento mensal com comprovante.
-- PIX copia-e-cola + QR Code com chave `621.669.183-01`.
+- PIX copia-e-cola + QR Code com chave `123.456.789-01`.
 - Area administrativa com dashboard, usuarios e validacao dos pagamentos.
 
 ## Stack
